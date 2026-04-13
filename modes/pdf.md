@@ -16,10 +16,10 @@
 10. Construye competency grid desde requisitos del JD (6-8 keyword phrases)
 11. Inyecta keywords naturalmente en logros existentes (NUNCA inventa)
 12. Genera HTML completo desde template + contenido personalizado
-13. Lee `name` de `config/profile.yml` → normaliza a kebab-case lowercase (e.g. "John Doe" → "john-doe") → `{candidate}`
-14. Escribe HTML a `/tmp/cv-{candidate}-{company}.html`
-15. Ejecuta: `node generate-pdf.mjs /tmp/cv-{candidate}-{company}.html output/cv-{candidate}-{company}-{YYYY-MM-DD}.pdf --format={letter|a4}`
-15. Reporta: ruta del PDF, nº páginas, % cobertura de keywords
+13. Escribe HTML a `/tmp/cv-candidate-{company}.html`
+14. Ejecuta: `node generate-pdf.mjs /tmp/cv-candidate-{company}.html output/cv-candidate-{company}-{YYYY-MM-DD}.pdf --format={letter|a4}`
+15. **Verificación visual OBLIGATORIA** (ver sección abajo) — NO confirmar output hasta pasar esta verificación
+16. Reporta: ruta del PDF, nº páginas, % cobertura de keywords
 
 ## Reglas ATS (parseo limpio)
 
@@ -33,24 +33,128 @@
 
 ## Diseño del PDF
 
-- **Fonts**: Space Grotesk (headings, 600-700) + DM Sans (body, 400-500)
-- **Fonts self-hosted**: `fonts/`
-- **Header**: nombre en Space Grotesk 24px bold + línea gradiente `linear-gradient(to right, hsl(187,74%,32%), hsl(270,70%,45%))` 2px + fila de contacto
-- **Section headers**: Space Grotesk 13px, uppercase, letter-spacing 0.05em, color cyan primary
-- **Body**: DM Sans 11px, line-height 1.5
-- **Company names**: color accent purple `hsl(270,70%,45%)`
-- **Márgenes**: 0.6in
+- **Fonts**: Space Grotesk (headings, 700) + DM Sans (body, 400-700) — both self-hosted in `fonts/`
+- **Body base**: DM Sans 10px, line-height 1.5, color `#1E293B`
+- **Header**: foto circular 60px a la IZQUIERDA (profile-card layout, sin ring/box-shadow, `margin-top: 3px`) + bloque derecho con nombre Space Grotesk 28px 700 `#0F172A` + tagline DM Sans 10.5px `#94A3B8` + contact row. Header tiene `border-bottom: 1px solid #E2E8F0; padding-bottom: 8px` — SIN línea gradiente.
+- **Contact row separators**: `·` (middot), not `|`
+- **Contact icons**: 4 SVGs Lucide (`fill="none"`, `stroke="currentColor"`, `stroke-width="2"`, 9×9px, color `#94A3B8`) — phone, mail, linkedin (outline), map-pin. Cada item en `<span class="ci">` (inline-flex, gap 3px).
+- **Section titles**: Space Grotesk 11.5px, uppercase, letter-spacing 0.12em, indigo `#4F46E5`, border-bottom 1px `#E2E8F0` — no left bar (same size as company names)
+- **Company names**: Space Grotesk 11.5px 700, `#0F172A`
+- **Date badges**: DM Sans 8.5px 500, `#475569`, background `#F1F5F9`, border-radius 4px — mismo estilo para job-period, edu-year, cert-year
+- **Competency tags**: pill shape (border-radius: 20px), indigo `#4338CA` text, `#EEF2FF` bg, `#C7D2FE` border
+- **Key metrics (strong)**: `color: #4338CA` + `background: rgba(79,70,229,0.08)` — highlight sutil, atrae el ojo del reclutador
+- **Job separators**: `.job + .job { border-top: 1px solid #E2E8F0; padding-top: 7px; }` — evita el efecto "flotante"
+- **Márgenes PDF**: 0.6in todos los lados
 - **Background**: blanco puro
 
 ## Orden de secciones (optimizado "6-second recruiter scan")
 
-1. Header (nombre grande, gradiente, contacto, link portfolio)
+1. Header (nombre grande, border-bottom limpio, contacto con iconos Lucide)
 2. Professional Summary (3-4 líneas, keyword-dense)
 3. Core Competencies (6-8 keyword phrases en flex-grid)
 4. Work Experience (cronológico inverso)
 5. Projects (top 3-4 más relevantes)
 6. Education & Certifications
 7. Skills (idiomas + técnicos)
+
+## Regla de una página
+
+**El CV debe caber en una sola página A4.** Al generar contenido:
+- Professional Summary: 3-4 líneas (apuntar a 4 líneas completas para evitar whitespace vacío)
+- Core Competencies: **5-6 items cortos** (≤20 chars cada uno) — el grid es `flex-wrap: nowrap`, solo hay 1 línea. Tags largos se recortan.
+- Experience bullets: 2-3 por rol (priorizar los más relevantes al JD)
+- Projects: máximo 2-3
+- Si hay demasiado contenido, recortar bullets — nunca reducir el font-size en el HTML
+
+## Estructura HTML de experiencia laboral
+
+Usar esta estructura para cada entrada `{{EXPERIENCE}}`:
+
+```html
+<!-- Rol con bullets -->
+<div class="job">
+  <div class="job-header">
+    <span class="job-company">Nombre Empresa</span>
+    <span class="job-period">Mes AAAA – Mes AAAA</span>
+  </div>
+  <div class="job-meta">
+    <span class="role">Título del Rol</span>
+    <span class="dot">·</span>
+    <span class="location">Ciudad</span>
+  </div>
+  <ul>
+    <li>Bullet con <strong>métrica clave</strong> en coral</li>
+  </ul>
+</div>
+
+<!-- Rol compacto (antiguo o breve) — sin lista de bullets -->
+<div class="job">
+  <div class="job-header">
+    <span class="job-company">Nombre Empresa</span>
+    <span class="job-period">Mes AAAA – Mes AAAA</span>
+  </div>
+  <div class="job-meta">
+    <span class="role">Título del Rol</span>
+    <span class="dot">·</span>
+    <span class="location">Ciudad · nota adicional</span>
+  </div>
+  <div class="job-note">Una línea de descripción compacta.</div>
+</div>
+```
+
+Los separadores entre entradas son automáticos vía CSS (`.job + .job { border-top: 1px solid #eef0f4; }`).
+
+Para educación y certificaciones, usar el mismo badge de fecha:
+```html
+<span class="edu-year">2015–2020</span>
+<span class="cert-year">Jan 2026</span>
+```
+
+## Reglas de contenido del CV
+
+- **No incluir GitHub URL** en la fila de contacto por defecto. Solo añadir si el rol lo requiere explícitamente (automation engineer, technical ops, etc.) y el JD lo menciona.
+- **No incluir `career-ops` en proyectos** — es una herramienta personal de job search, no un proyecto profesional relevante para la mayoría de roles.
+- **Sección Proyectos (`{{PROJECTS_SECTION}}`)**: omitir la sección completa si no hay proyectos genuinamente relevantes para el JD. Usar `<!-- no projects -->` o eliminar el bloque. No inventar proyectos.
+- **`{{TAGLINE}}`**: derivar del arquetipo del rol (ej. "Operations & Automation Manager", "Supply Chain Manager", "Chief of Staff"). Nunca dejar en blanco.
+- **Roles compactos**: SOLO los 2 roles más antiguos o cortos pueden usar `.job-note`. Los roles de carrera media deben usar `<ul>` con bullets.
+- **`{{NAME}}` — COPIAR VERBATIM de cv.md línea 1**: No reescribir el nombre manualmente. El nombre contiene `î` (U+00EE, i con circunflejo). Reescribirlo a mano arriesga sustituirlo por `ï` (i con diéresis). Copiar exactamente del archivo fuente.
+- **`<strong>` OBLIGATORIO en todos los entries**: Cada `<li>` en cada job DEBE envolver al menos una métrica clave en `<strong>`. Igual para `.job-note` — envolver cifras/logros clave en `<strong>`. Esto activa el highlight indigo del CSS. No dejar ningún entry sin highlights.
+- **Densidad de bullets para llenar la página A4**: roles recientes (últimos 3 años): 3–4 bullets. Roles anteriores: 2–3 bullets. Solo `.job-note` para los 2 roles más antiguos/cortos.
+
+## Verificación visual del output — OBLIGATORIA (paso 15)
+
+Ejecutar SIEMPRE antes de confirmar el output. NO se puede omitir.
+
+```bash
+# 1. Copiar HTML a raíz del proyecto (para que ./fonts/ y ./resources/ resuelvan bien)
+cp /tmp/cv-candidate-{company}.html cv-preview.html
+
+# 2. Servidor HTTP en background
+python3 -m http.server 7788 &
+HTTP_PID=$!
+
+# 3. Screenshot con Playwright (Node.js directo, NO MCP — el MCP falla entre llamadas)
+node -e "const {chromium}=require('playwright');(async()=>{const b=await chromium.launch({headless:true});const p=await b.newPage();await p.goto('http://localhost:7788/cv-preview.html',{waitUntil:'networkidle'});await p.evaluate(()=>document.fonts.ready);await p.screenshot({path:'cv-verification.png',fullPage:true});await b.close();})()"
+
+# 4. Limpiar
+kill $HTTP_PID 2>/dev/null; rm cv-preview.html
+```
+
+**Checklist de verificación** — leer `cv-verification.png` y confirmar cada punto:
+- [ ] Nombre renderiza exactamente como en cv.md (ej. `Benoît`, no `Benoït`)
+- [ ] Foto visible y circular
+- [ ] Space Grotesk en nombre y títulos de sección
+- [ ] Sin barras verticales antes de los títulos de sección
+- [ ] Competencies en 1 línea (no overflow)
+- [ ] Todos los job entries tienen texto en indigo (`<strong>`) — ninguno sin highlights
+- [ ] Contenido llena la mayor parte de la página A4 (sin espacio vacío grande al final)
+- [ ] Nada cortado por overflow
+
+Si algún punto falla → corregir el HTML y repetir desde el paso 14.
+
+## Herramientas condicionales
+
+Solo incluir Make/Integromat o n8n en Skills si el JD las menciona explícitamente. Por defecto, omitir.
 
 ## Estrategia de keyword injection (ético, basado en verdad)
 
@@ -63,7 +167,9 @@ Ejemplos de reformulación legítima:
 
 ## Template HTML
 
-Usar el template en `cv-template.html`. Reemplazar los placeholders `{{...}}` con contenido personalizado:
+Usar el template en `cv-template.html`. Reemplazar los placeholders `{{...}}` con contenido personalizado.
+
+**IMPORTANTE — reemplazo global en Node.js**: Usar `s.split(key).join(value)` en lugar de `s.replace(key, value)`. `String.replace()` solo reemplaza la **primera** ocurrencia — `{{NAME}}` aparece en el `<title>` Y en el `<h1>`, y el segundo queda sin reemplazar si se usa `.replace()`.
 
 | Placeholder | Contenido |
 |-------------|-----------|
@@ -75,6 +181,9 @@ Usar el template en `cv-template.html`. Reemplazar los placeholders `{{...}}` co
 | `{{LINKEDIN_DISPLAY}}` | [from profile.yml] |
 | `{{PORTFOLIO_URL}}` | [from profile.yml] (o /es según idioma) |
 | `{{PORTFOLIO_DISPLAY}}` | [from profile.yml] (o /es según idioma) |
+| `{{PHONE}}` | `07 70 41 27 88` (from profile.yml) |
+| `{{PHOTO_SRC}}` | `./resources/image.png` |
+| `{{TAGLINE}}` | Archetype-specific role title, e.g. "Operations & Automation Manager" |
 | `{{LOCATION}}` | [from profile.yml] |
 | `{{SECTION_SUMMARY}}` | Professional Summary / Resumen Profesional |
 | `{{SUMMARY_TEXT}}` | Summary personalizado con keywords |

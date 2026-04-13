@@ -35,5 +35,13 @@ bun.lock
 # Claude Code local
 .claude/settings.local.json
 .claude/memory/
+
+# Qwen Code local
+.qwen/plans/
+.qwen/todos/
+.qwen/tmp/
+.qwen/debug/
+.qwen/extensions/
+
 career-dashboard
 package-lock.json

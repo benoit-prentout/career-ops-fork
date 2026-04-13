@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# career-ops batch runner — standalone orchestrator for claude -p workers
-# Reads batch-input.tsv, delegates each offer to a claude -p worker,
+# career-ops batch runner — standalone orchestrator for batch workers
+# Reads batch-input.tsv, delegates each offer to a qwen -p or claude -p worker,
 # tracks state in batch-state.tsv for resumability.
+# Auto-detects which CLI is available; prefers qwen, falls back to claude.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -21,6 +22,17 @@ STATE_LOCK_PID_FILE="$STATE_LOCK_DIR/pid"
 STATE_LOCK_TIMEOUT_SECONDS=30
 MAIN_PID="${BASHPID:-$$}"
 
+# CLI detection: prefer qwen, fall back to claude
+BATCH_CLI=""
+BATCH_CLI_NAME=""
+if command -v qwen &>/dev/null; then
+  BATCH_CLI="qwen"
+  BATCH_CLI_NAME="qwen"
+elif command -v claude &>/dev/null; then
+  BATCH_CLI="claude"
+  BATCH_CLI_NAME="claude"
+fi
+
 # Defaults
 PARALLEL=1
 DRY_RUN=false
@@ -30,8 +42,8 @@ MAX_RETRIES=2
 
 usage() {
   cat <<'USAGE'
-career-ops batch runner — process job offers in batch via claude -p workers
-Uses your default Claude model (Claude Max subscription).
+career-ops batch runner — process job offers in batch via batch workers
+Uses your default AI CLI (qwen or claude, auto-detected).
 
 Usage: batch-runner.sh [OPTIONS]
 
@@ -116,10 +128,12 @@ check_prerequisites() {
     exit 1
   fi
 
-  if ! command -v claude &>/dev/null; then
-    echo "ERROR: 'claude' CLI not found in PATH."
+  if [[ -z "$BATCH_CLI" ]]; then
+    echo "ERROR: Neither 'qwen' nor 'claude' CLI found in PATH. Install one to run batch processing."
     exit 1
   fi
+
+  echo "Using CLI: $BATCH_CLI_NAME"
 
   mkdir -p "$LOGS_DIR" "$TRACKER_DIR" "$REPORTS_DIR"
 }
@@ -347,9 +361,9 @@ process_offer() {
     -e "s|{{ID}}|${esc_id}|g" \
     "$PROMPT_FILE" > "$resolved_prompt"
 
-  # Launch claude -p worker (uses default model from Claude Max subscription)
+  # Launch batch worker (uses qwen -p or claude -p, auto-detected)
   local exit_code=0
-  claude -p \
+  "$BATCH_CLI" -p \
     --dangerously-skip-permissions \
     --append-system-prompt-file "$resolved_prompt" \
     "$prompt" \
