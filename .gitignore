@@ -42,6 +42,20 @@ bun.lock
 .qwen/tmp/
 .qwen/debug/
 .qwen/extensions/
+.qwen/settings.json
+.qwen/settings.json.orig
+
+# Playwright MCP debug artifacts
+.playwright-mcp/
+
+# Local copies and personal artifacts
+dashboard copy/
+resources/
+*.bak
+*.png
+*.jpg
+*.jpeg
+*.gif
 
 career-dashboard
 package-lock.json
