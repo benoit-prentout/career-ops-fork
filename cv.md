@@ -10,7 +10,7 @@
 
 Ops & Automation profile, mid-level -- I own cross-functional operational scopes and use lightweight automation as leverage. Target: startup/PME ops roles, or Référent / Coordinateur Supply Chain in larger groups.
 
-Nearly three years at getinside (Series A Retail Media, €1.6M → €3M target) building the ops layer from scratch: print supply chain, studio P&L, campaign tooling. Lifted operational margin from 30% to 40% in the first year by automating recurring workflows (Google Apps Script, Python, Apify) instead of hiring headcount. Five prior years in execution roles across pharma cold chain (Marken, Sanofi, Evotec) and agricultural supply chain (EuroChem) -- IATA, HACCP, Six Sigma certified.
+Nearly three years at getinside (Series A Retail Media, €1.6M → €3M target) building the ops layer from scratch: print supply chain, studio P&L, campaign tooling. Lifted operational margin from 30% to over 45% in the first year by automating recurring workflows (Google Apps Script, Python, Apify) instead of hiring headcount. Five prior years in execution roles across pharma cold chain (Marken, Sanofi, Evotec) and agricultural supply chain (EuroChem) -- IATA, HACCP, Six Sigma certified.
 
 The pattern: inherit a broken process, build a lightweight tool, leave a system that outlasts me.
 
@@ -38,8 +38,7 @@ Reporting to the COO, with direct exposure to CEO and CRO.
 **Import/Export Specialist** *(fixed-term contract)*
 May 2023 – September 2023 *(5 months)*
 
-- Handled customs for 200+ time-sensitive biological shipments; orchestrated 300+ multimodal shipments/year for a global pharma R&D company.
-- Resolved 20+ high-stakes operational disputes; 100% audit pass rate (zero non-conformities).
+- Handled customs clearance for time-sensitive biological shipments and coordinated multimodal transport for a global pharma R&D company.
 
 ### EuroChem Agro France -- Paris, France
 **Supply Chain Associate**

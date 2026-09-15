@@ -9,7 +9,7 @@
 ## getinside — Operations Layer (October 2023 – Present)
 
 ### Operational Margin Lift
-- **Metric:** +10pp margin (30% → 40%) in first year; sustained thereafter
+- **Metric:** +15pp margin (30% → over 45%) in first year; sustained thereafter
 - **Driver:** Supplier renegotiation (CPM -33-50%), process automation, cost tracking
 - **Context:** Print + studio supply chain at Series A Retail Media startup
 - **P&L scope:** €55K margin managed (print + studio)
@@ -72,10 +72,9 @@
 
 ## Evotec — Pharma Import/Export
 
-### Customs Compliance
-- **Metric:** 100% regulatory compliance, zero non-conformities in audits
-- **Scope:** 200+ time-sensitive biological shipments with multi-country transit
-- **Scale:** 300+ annual shipments multimodal; 20+ high-stakes operational disputes resolved
+### Customs Handling
+- **Scope:** Customs clearance for time-sensitive biological shipments with multi-country transit; multimodal transport coordination
+- **Note:** Short fixed-term contract (5 months). No quantified metrics available for this role -- see "Revendications retirées" in modes/_profile.md
 
 ## EuroChem Agro — Agricultural Logistics
 

@@ -41,7 +41,7 @@ If deeper company research is useful, recommend running `/career-ops deep` separ
 
 ## Step 0 — Archetype Detection
 
-Classify the job into one of the 6 archetypes (see `_shared.md`). If it is a hybrid, indicate the 2 closest ones. This determines:
+Classify the job into one of the user's archetypes in `modes/_profile.md` if that file defines an archetype table — it overrides the generic defaults. Only fall back to the 6 generic archetypes in `_shared.md` when `_profile.md` has none. Use the archetype's exact name as written; never invent a new label or free-text variant. If it is a hybrid, indicate the 2 closest ones. This determines:
 - Which proof points to prioritize in block B
 - How to rewrite the summary in block E
 - Which STAR stories to prepare in block F

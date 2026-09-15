@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!-- career-ops-template
+name: Français (classic)
+version: 1.1.0
+-->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Lettre de motivation — {{NAME}}</title>
+<style>
+  /* Visual language mirrors templates/cv-template.classic.html so the CV and
+     the cover letter read as one application package: same ATS-safe system
+     font stack, same slate text palette, indigo accent (#4F46E5) on the
+     object line, and the same gray badge treatment for the dateline. */
+  :root {
+    --font-family: "Liberation Sans", 'Helvetica Neue', Arial, 'DejaVu Sans', sans-serif;
+    --accent-color: #4F46E5;
+    --font-size: 10.5px;
+    --page-margin: 0.6in;
+  }
+  @page { margin: var(--page-margin); }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0, "dlig" 0;
+  }
+
+  html {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: 1.6;
+    color: #334155;
+    background: #ffffff;
+  }
+
+  .name {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0F172A;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+    margin-bottom: 5px;
+  }
+
+  .contact, .credentials {
+    font-size: 9.5px;
+    color: #64748B;
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+
+  .credentials { color: #94A3B8; }
+
+  .contact a, .credentials a, .footnotes a {
+    color: #64748B;
+    text-decoration: none;
+  }
+
+  .divider {
+    border: none;
+    margin: 10px 0 0;
+  }
+
+  .role-title {
+    font-weight: 700;
+    font-size: 11.5px;
+    color: var(--accent-color);
+    margin-top: 14px;
+    margin-bottom: 4px;
+  }
+
+  .dateline {
+    display: inline-block;
+    font-size: 8.5px;
+    font-weight: 500;
+    color: #475569;
+    background: #F1F5F9;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+  }
+
+  .greeting {
+    margin-bottom: 9px;
+  }
+
+  p {
+    margin-bottom: 9px;
+  }
+
+  .achievements {
+    list-style: none;
+    margin-bottom: 5px;
+  }
+
+  .achievements li {
+    margin-bottom: 5px;
+    padding-left: 14px;
+    position: relative;
+  }
+
+  .achievements li::before {
+    content: "\2022";
+    position: absolute;
+    left: 0;
+  }
+
+  .achievements li b {
+    color: #0F172A;
+  }
+
+  .language-closing {
+    font-style: italic;
+    margin-top: 4px;
+    margin-bottom: 9px;
+  }
+
+  .signature {
+    margin-top: 12px;
+    margin-bottom: 9px;
+  }
+
+  .footnotes {
+    margin-top: 10px;
+    padding-top: 4px;
+    border-top: 0.5pt solid #cccccc;
+  }
+
+  .footnotes p {
+    font-size: 8px;
+    color: #888888;
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+</style>
+</head>
+<body>
+  <div class="name">{{NAME}}</div>
+  <div class="contact">{{CONTACT_LINE}}</div>
+  {{CREDENTIALS_BLOCK}}
+  <hr class="divider">
+
+  <div class="role-title">Objet : candidature au poste de {{ROLE_TITLE}}</div>
+  <div class="dateline">{{DATELINE}}</div>
+
+  {{GREETING_BLOCK}}
+  <p>{{OPENING}}</p>
+  <p>{{PROFILE_INTRO}}</p>
+
+  {{ACHIEVEMENTS_BLOCK}}
+
+  {{PROBLEMS_BLOCK}}
+  {{CLOSING_BLOCK}}
+  {{LANGUAGE_CLOSING_BLOCK}}
+  {{SIGNATURE_BLOCK}}
+  {{FOOTNOTES_BLOCK}}
+</body>
+</html>
