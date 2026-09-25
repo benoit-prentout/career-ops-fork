@@ -20,7 +20,7 @@ import { isMainModule } from './lib/is-main-module.mjs';
 import { load as yamlLoad } from 'js-yaml';
 import { resolveColumns, parseTrackerRow, normalizeVia } from './tracker-parse.mjs';
 import { getCareerOpsRoot } from './path-resolver.mjs';
-import { flagValue, validateFlags } from './lib/cli-flags.mjs';
+import { flagValue, hasFlag, validateFlags } from './lib/cli-flags.mjs';
 
 const CAREER_OPS = getCareerOpsRoot();
 const APPS_FILE = existsSync(join(CAREER_OPS, 'data/applications.md'))
@@ -79,21 +79,11 @@ const USAGE = `Usage:
 
 // --- CLI args ---
 const summaryMode = args.includes('--summary');
-const MIN_THRESHOLD = (() => {
-  const raw = flagValue(args, '--min-threshold');
-  if (raw === undefined) return 5;
 
-  const value = parseInt(raw, 10);
-  return Number.isNaN(value) ? 5 : value;
-})();
-
-const MIN_VENDOR_N = (() => {
-  const raw = flagValue(args, '--min-vendor-n');
-  if (raw === undefined) return 8;
-
-  const value = parseInt(raw, 10);
-  return Number.isNaN(value) || value < 1 ? 8 : value;
-})();
+// CLI values stay at their defaults when this module is imported by tests.
+// Parsing/validation is performed only in the main-module guard below.
+let MIN_THRESHOLD = 5;
+let MIN_VENDOR_N = 8;
 
 // --- Status normalization (mirrors verify-pipeline.mjs) ---
 const ALIASES = {
@@ -1250,7 +1240,9 @@ function analyze() {
   const entries = parseTracker();
 
   if (entries.length === 0) {
-    return { error: 'No applications found in tracker.' };
+    // noData marks this as the empty-tracker case rather than a failure, so the
+    // exit status below does not have to match on the message text.
+    return { error: 'No applications found in tracker.', noData: true };
   }
 
   // Enrich entries with report data and classification
@@ -1678,6 +1670,27 @@ if (isMainModule(import.meta.url)) {
     requireOperand: true,
   });
 
+  const rawMinThreshold = flagValue(args, '--min-threshold');
+  const rawMinVendorN = flagValue(args, '--min-vendor-n');
+
+  if (hasFlag(args, '--min-threshold')) {
+    if (rawMinThreshold === undefined || !/^\d+$/.test(String(rawMinThreshold)) ||
+        !Number.isSafeInteger(Number(rawMinThreshold))) {
+      console.error(`Error: --min-threshold requires a non-negative integer, got "${rawMinThreshold ?? ''}"`);
+      process.exit(1);
+    }
+    MIN_THRESHOLD = Number(rawMinThreshold);
+  }
+
+  if (hasFlag(args, '--min-vendor-n')) {
+    if (rawMinVendorN === undefined || !/^\d+$/.test(String(rawMinVendorN)) ||
+        !Number.isSafeInteger(Number(rawMinVendorN)) || Number(rawMinVendorN) < 1) {
+      console.error(`Error: --min-vendor-n requires a positive integer, got "${rawMinVendorN ?? ''}"`);
+      process.exit(1);
+    }
+    MIN_VENDOR_N = Number(rawMinVendorN);
+  }
+
   if (args.includes('--self-test')) {
     runSelfTest();
   }
@@ -1690,5 +1703,16 @@ if (isMainModule(import.meta.url)) {
     console.log(JSON.stringify(result, null, 2));
   }
 
-  if (result.error) process.exit(1);
+  // "No applications found" is the state of a NEW USER, not a failure. Every
+  // other analysis script over the same tracker — stats, upskill, salary-gap,
+  // process-quality, rejection-latency, detect-reposts, company-history,
+  // calibrate, funnel-velocity, tracker-sync-check — reports it and exits 0.
+  // This one exited 1, which breaks `&&` chaining and makes the batch runners
+  // treat an empty tracker as a broken command.
+  //
+  // Still non-zero for a genuine failure: the check is on the KIND of error, so
+  // a future `result.error` that is not "no data" keeps its exit 1. Written as
+  // an allowlist of no-data codes rather than a message match, so the exit
+  // status does not depend on prose.
+  if (result.error && !result.noData) process.exit(1);
 }

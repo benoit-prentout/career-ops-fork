@@ -17,6 +17,7 @@ import (
 var (
 	reReportLink     = regexp.MustCompile(`\[(\d+)\]\(([^)]+)\)`)
 	reScoreValue     = regexp.MustCompile(`(\d+\.?\d*)/5`)
+	reSeparatorRow   = regexp.MustCompile(`^\|\s*:?-+:?(?:\s*\|\s*:?-+:?)*\s*\|?\s*$`)
 	reArchetype      = regexp.MustCompile(`(?i)\*\*(?:Arquetipo|Archetype)(?:\s+(?:detectado|detected))?\*\*\s*\|\s*(.+)`)
 	reTlDr           = regexp.MustCompile(`(?i)\*\*TL;DR\*\*\s*\|\s*(.+)`)
 	reTlDrColon      = regexp.MustCompile(`(?i)\*\*TL;DR:\*\*\s*(.+)`)
@@ -102,10 +103,15 @@ func ParseApplications(careerOpsPath string) []model.CareerApplication {
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
-		if line == "" || strings.HasPrefix(line, "# ") || strings.HasPrefix(line, "|---") || strings.HasPrefix(line, "| #") {
+		if line == "" || strings.HasPrefix(line, "# ") || reSeparatorRow.MatchString(line) || strings.HasPrefix(line, "| #") {
 			continue
 		}
 		if !strings.HasPrefix(line, "|") {
+			continue
+		}
+		// A recognized header can start with any column (or Num instead of #).
+		// Use the same full-schema check as column detection, never a lone label.
+		if detectTrackerColumns([]string{line}) != nil {
 			continue
 		}
 
@@ -627,15 +633,21 @@ func splitTrackerRow(line string) []string {
 }
 
 // trackerHeaderAliases maps a lowercased header cell to a canonical field name.
-// Mirrors HEADER_ALIASES in tracker-parse.mjs (including the Spanish aliases) so
-// the Go data layer tolerates the same customized layouts as the Node tracker
-// tooling after #954.
+// Mirrors tracker-aliases.json, which Node and web load directly. Keep the full
+// table in sync; TestTrackerHeaderAliasesMatchSharedJSON guards exact parity.
 var trackerHeaderAliases = map[string]string{
-	"#": "num", "num": "num", "date": "date",
+	"#": "num", "num": "num",
+	"date": "date", "fecha": "date", "datum": "date", "data": "date",
+	"dato": "date", "tanggal": "date",
 	"company": "company", "empresa": "company",
+	"firma": "company", "virksomhed": "company", "perusahaan": "company",
 	"via": "via", "role": "role", "puesto": "role",
-	"location": "location", "score": "score", "status": "status",
-	"pdf": "pdf", "report": "report", "notes": "notes", "url": "url",
+	"rolle": "role", "rola": "role", "vaga": "role",
+	"location": "location", "ort": "location", "score": "score", "status": "status",
+	"pdf": "pdf", "materials": "pdf", "report": "report",
+	"apply link": "applylink", "apply": "applylink",
+	"follow-up": "followup", "follow up": "followup", "followup": "followup",
+	"notes": "notes", "url": "url",
 }
 
 // legacyTrackerColumns is the original fixed layout in splitTrackerRow field
@@ -992,8 +1004,11 @@ func ComputeProgressMetrics(apps []model.CareerApplication) model.ProgressMetric
 	interview := statusCounts["interview"] + statusCounts["offer"] + statusCounts["hired"]
 	offer := statusCounts["offer"] + statusCounts["hired"]
 
+	// Top stage counts every tracked row, including rows backfilled without a
+	// score (#1799) — hence "Tracked", not "Evaluated", which already means both
+	// a status value and the Stats screen's scored count.
 	pm.FunnelStages = []model.FunnelStage{
-		{Label: "Evaluated", Count: total, Pct: 100.0},
+		{Label: "Tracked", Count: total, Pct: 100.0},
 		{Label: "Applied", Count: applied, Pct: safePct(applied, total)},
 		{Label: "Responded", Count: responded, Pct: safePct(responded, applied)},
 		{Label: "Interview", Count: interview, Pct: safePct(interview, applied)},
