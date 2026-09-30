@@ -11,7 +11,7 @@
 ### Operational Margin Lift
 - **Metric:** +15pp margin (30% → over 45%) in first year; sustained thereafter
 - **Driver:** Supplier renegotiation (CPM -33-50%), process automation, cost tracking
-- **Context:** Print + studio supply chain at Series A Retail Media startup
+- **Context:** Print + studio supply chain at a Retail Media startup
 - **P&L scope:** €55K margin managed (print + studio)
 - **Why it matters:** Not a cost-cutting exercise — built a margin profit center from scratch (€22,700+ gross on flyer insertions alone in <1 year)
 
@@ -33,7 +33,7 @@
 - **Scale:** €22,700+ gross margin on flyer insertions in under a year
 
 ### Campaign Operations at Scale
-- **Volume:** 400+ campaigns/year (950 completed since launch)
+- **Volume:** 2,200+ campaigns/year (volume has grown since joining)
 - **Reach:** 16M+ contacts, 44K+ conversions
 - **Revenue generated:** €503K in advertiser revenue
 - **Key accounts:** HelloFresh (2.4M+ insertions/year across partners), Boulanger, Kiabi, Showroomprivé, Sarenza

@@ -10,19 +10,19 @@
 
 Ops & Automation profile, mid-level -- I own cross-functional operational scopes and use lightweight automation as leverage. Target: startup/PME ops roles, or Référent / Coordinateur Supply Chain in larger groups.
 
-Nearly three years at getinside (Series A Retail Media, €1.6M → €3M target) building the ops layer from scratch: print supply chain, studio P&L, campaign tooling. Lifted operational margin from 30% to over 45% in the first year by automating recurring workflows (Google Apps Script, Python, Apify) instead of hiring headcount. Five prior years in execution roles across pharma cold chain (Marken, Sanofi, Evotec) and agricultural supply chain (EuroChem) -- IATA, HACCP, Six Sigma certified.
+Nearly three years at getinside (Retail Media SaaS) building the ops layer from scratch: print supply chain, studio P&L, campaign tooling. Lifted operational margin from 30% to over 45% in the first year by automating recurring workflows (Google Apps Script, Python, Apify) instead of hiring headcount. Four prior years in execution roles across pharma cold chain (Marken, Sanofi, Evotec) and agricultural supply chain (EuroChem) -- IATA, HACCP, Six Sigma certified.
 
 The pattern: inherit a broken process, build a lightweight tool, leave a system that outlasts me.
 
 ## Work Experience
 
 ### getinside -- Toulouse, France
-**Ops & Automation Manager** *(internally: Delivery Manager / Head of Operations & Automation)*
-October 2023 – Present *(2 years 7 months)*
+**Responsable des Opérations de campagne** *(Campaign Operations Manager, Ops & Automation)*
+October 2023 – Present *(2 years 11 months)*
 
 Reporting to the COO, with direct exposure to CEO and CRO.
 
-- Built the print and routing supply chain from scratch with external partners (printers, finishing providers, e-merchants); piloted 400+ campaigns/year (950 completed since launch), reaching 16M+ contacts and generating €503K in advertiser revenue with 44K+ conversions.
+- Built the print and routing supply chain from scratch with external partners (printers, finishing providers, e-merchants); piloted 2,200+ campaigns/year, reaching 16M+ contacts and generating €503K in advertiser revenue with 44K+ conversions.
 - Owned the Graphic Design Studio end-to-end: brief intake, visual content production, creative validation, and ad format compliance. Onboarded new joiners from other services (including their N+1) and all platform users; built and maintained the company's internal knowledge base (Notion, NotebookLM).
 - Onboarded major distributors onto the platform (Boulanger, Kiabi, Showroomprivé, Sarenza); deployed HelloFresh key account campaigns (2.4M+ insertions/year across partners); monitored wallets, invoice compliance, and flagged anomalies; produced monthly reporting for external CFO.
 - Built automation tools via Google Apps Script and Python: AI-powered creative scoring, anti-delay Slack bot for campaign print deadlines, HTML QA viewer for pixel tracking and email responsiveness testing, and automated dashboards (revenue, wallets, performance) with real-time error alerting.
@@ -96,7 +96,7 @@ January 2015 – January 2020
 
 **Data & Analytics:** Google Sheets (macros, automation, data analysis), dashboard design, revenue simulation, pixel tracking validation.
 
-**CRM & Marketing Ops:** HubSpot (CRM, campaign tracking, pipeline management), Mailchimp (email campaigns), CPM pricing, ad format compliance.
+**CRM & Marketing Ops:** HubSpot administration (custom properties, pipelines, dashboards, campaign tracking, pipeline management), Mailchimp (email campaigns), CPM pricing, ad format compliance.
 
 **Creative & Design:** Adobe Illustrator, Adobe InDesign, Adobe Photoshop, Figma (UI/prototyping), email QA testing.
 
